@@ -1,0 +1,1275 @@
+/* Import font-family */
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:wght@500&display=swap');
+
+/* Variables */
+:root {
+    --border-radius: 10px;
+    --bg-color: #222;
+    --text-color: #fff;
+    --btn-size: 48px;
+    --btn-size-mobile: 40px;
+    --highlight-color: rgba(0, 0, 0, 0.1);
+    --fallback-bg: #222;
+    --primary-color: #007bff;
+    --primary-dark: #0056b3;
+    --username-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(24, 26, 32, 0.85));
+    --username-bg-hover: linear-gradient(135deg, rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.9));
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-border-hover: rgba(255, 255, 255, 0.3);
+}
+
+/* Global Styles */
+* {
+    outline: none;
+    font-family: 'Comfortaa', sans-serif;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        url('background.jpg') center/cover no-repeat fixed,
+        var(--fallback-bg);
+    will-change: background;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll;
+    }
+}
+
+/* Unsplash and Author attribution */
+#attribution {
+    z-index: 3;
+    position: absolute;
+    padding: 10px;
+    bottom: 0;
+    right: 10px;
+    font-size: small;
+    color: var(--text-color);
+    background: var(--highlight-color);
+    border-radius: var(--border-radius);
+}
+
+/* Random image */
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Ensure the random image spans the entire screen */
+#randomImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Prevent buttons from inheriting the image as background */
+button {
+    background: none;
+    color: inherit;
+    touch-action: manipulation; /* Prevent zoom and other default behaviors */
+}
+
+/* Swap camera mobile only */
+#swapCameraBtn {
+    display: none;
+}
+
+/* Screen share button - hidden by default, shown when supported */
+#screenShareBtn {
+    display: none;
+}
+
+/* Session Time - Compact Design */
+#sessionTime {
+    z-index: 4;
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(0, 123, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    align-items: center;
+    gap: 3px;
+    min-width: 50px;
+    justify-content: center;
+    font-family: inherit;
+}
+
+#sessionTime::before {
+    content: '⏱';
+    font-size: 0.65rem;
+}
+
+#sessionTime:hover {
+    background: rgba(0, 123, 255, 1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Room */
+#roomPage {
+    position: absolute;
+    display: none;
+}
+
+/* Home Sign in */
+#signInPage {
+    position: absolute;
+    display: none;
+}
+
+/* General Card Styles */
+.card {
+    max-width: 90% !important;
+    margin: 0 auto !important;
+    color: var(--text-color) !important;
+    font-weight: bold !important;
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    background: rgba(0, 0, 0, 0.07) !important;
+}
+
+.card-header h1 {
+    margin-top: 15px;
+}
+
+/* Video Styles */
+video {
+    width: 100%;
+    height: auto;
+    border: none;
+    border-radius: var(--border-radius);
+    object-fit: cover; /* Default for camera feeds */
+    cursor: pointer;
+    display: block;
+    max-width: 100%;
+}
+
+/* Screen sharing specific video styling */
+video.screen-share,
+#localVideo.screen-share,
+#remoteVideo.screen-share {
+    object-fit: contain !important; /* Show entire screen content without cropping */
+    background: #000 !important; /* Black background for letterboxing */
+}
+
+/* Camera feed specific styling (default) */
+video.camera-feed,
+#localVideo.camera-feed,
+#remoteVideo.camera-feed {
+    object-fit: cover !important; /* Fill container, may crop edges */
+    background: transparent !important;
+}
+
+video:hover {
+    filter: contrast(105%);
+}
+
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+.mirror {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
+/* Camera Off Overlay */
+.camera-off-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(24, 26, 32, 0.92); /* Consistent with UI dark theme */
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+/* Local video overlay has higher priority */
+#localVideoContainer .camera-off-overlay {
+    z-index: 105; /* Always above everything including remote overlays */
+}
+
+.camera-off-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.camera-off-overlay img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+    max-width: 25%; /* Ensure it doesn't exceed 25% of container width */
+    max-height: 25%; /* Ensure it doesn't exceed 25% of container height */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+.camera-off-overlay span {
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.camera-off-overlay .username {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--primary-color);
+}
+
+.camera-off-overlay .status {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* Local Video Styles */
+#localVideoContainer {
+    z-index: 100; /* Ensure local video is always on top */
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 200px;
+    height: 150px;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#localVideoContainer:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+#localVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--border-radius) - 2px);
+    position: relative;
+    z-index: 101; /* Ensure local video element is above remote video */
+}
+
+/* Override for screen sharing */
+#localVideo.screen-share {
+    object-fit: contain !important;
+    background: #000 !important;
+    border: 2px solid #ff6b35 !important; /* Orange border to indicate screen sharing */
+}
+
+/* Username Labels - Enhanced UI */
+/* Username Labels - Compact & Clean */
+#localUsername,
+#remoteUsername {
+    position: absolute;
+    bottom: 2px;
+    left: 3px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 3px;
+    z-index: 102;
+    transition: background 0.2s ease;
+    max-width: calc(100% - 6px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(2px);
+    font-family: inherit;
+}
+
+/* Different icons for local vs remote */
+#localUsername::before {
+    content: '🟢';
+    margin-right: 2px;
+    font-size: 0.65rem;
+}
+
+#remoteUsername::before {
+    content: '🟢';
+    margin-right: 2px;
+    font-size: 0.65rem;
+}
+
+/* Remote Video Styles */
+#remoteVideoContainer {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin: 10px auto;
+    max-width: 100%;
+    z-index: 1; /* Keep remote video container below local video */
+}
+
+#remoteVideo {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: var(--border-radius);
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+/* Override for screen sharing */
+#remoteVideo.screen-share {
+    object-fit: contain !important;
+    background: #000 !important;
+    border: 2px solid #ff6b35 !important; /* Orange border to indicate screen sharing */
+}
+
+#remoteVideo:hover {
+    transform: scale(1.02);
+}
+
+#streamStatusContainer {
+    z-index: 2;
+    display: inline-flex;
+    position: absolute;
+    text-align: center;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    top: 10px;
+    left: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+/* Hide Local Video on Mobile */
+@media (max-width: 768px) {
+    #localVideoContainer {
+        width: 120px;
+        height: 90px;
+        top: 15px;
+        left: 15px;
+        z-index: 100 !important; /* Ensure local video stays on top on mobile */
+    }
+
+    #localVideoContainer:hover {
+        transform: scale(1.02);
+    }
+
+    #localUsername,
+    #remoteUsername {
+        font-size: 0.7rem;
+        padding: 2px 4px;
+        bottom: 1px;
+        left: 1px;
+        border-radius: 5px;
+        max-width: calc(100% - 12px);
+    }
+
+    #localUsername::before,
+    #remoteUsername::before {
+        font-size: 0.7rem;
+        margin-right: 2px;
+    }
+
+    /* Mobile Session Time */
+    #sessionTime {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        border-radius: 16px;
+        min-width: 70px;
+    }
+
+    #sessionTime::before {
+        font-size: 0.8rem;
+    }
+
+    #remoteVideoContainer {
+        height: 75vh;
+    }
+
+    #remoteVideo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Responsive camera off overlay for mobile */
+    .camera-off-overlay img {
+        width: 32px !important;
+        height: 32px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .camera-off-overlay span {
+        font-size: 10px !important;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #localVideoContainer {
+        width: 160px;
+        height: 120px;
+        z-index: 100 !important; /* Ensure local video stays on top on tablet */
+    }
+
+    #remoteVideoContainer {
+        height: 75vh;
+    }
+
+    /* Responsive camera off overlay for tablet */
+    .camera-off-overlay img {
+        width: 48px !important;
+        height: 48px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .camera-off-overlay span {
+        font-size: 12px !important;
+    }
+}
+
+/* Desktop responsive */
+@media (min-width: 1025px) {
+    #localVideoContainer {
+        width: 200px;
+        height: 150px;
+        z-index: 100 !important; /* Ensure local video stays on top on desktop */
+    }
+
+    #remoteVideoContainer {
+        height: 80vh;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1440px) {
+    #localVideoContainer {
+        width: 240px;
+        height: 180px;
+        z-index: 100 !important; /* Ensure local video stays on top on large screens */
+    }
+
+    #remoteVideoContainer {
+        height: 85vh;
+    }
+
+    /* Responsive camera off overlay for large screens */
+    .camera-off-overlay img {
+        width: 80px !important;
+        height: 80px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .camera-off-overlay span {
+        font-size: 16px !important;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    #localVideoContainer {
+        width: 100px;
+        height: 75px;
+        top: 10px;
+        left: 10px;
+        z-index: 100 !important; /* Ensure local video stays on top in landscape */
+    }
+
+    #remoteVideoContainer {
+        height: 90vh;
+    }
+
+    /* Responsive camera off overlay for mobile landscape */
+    .camera-off-overlay img {
+        width: 24px !important;
+        height: 24px !important;
+        margin-bottom: 2px !important;
+    }
+
+    .camera-off-overlay span {
+        font-size: 8px !important;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    #localVideoContainer {
+        width: 100px;
+        height: 75px;
+        top: 10px;
+        z-index: 100 !important; /* Ensure local video stays on top on small screens */
+        left: 10px;
+    }
+
+    #localUsername,
+    #remoteUsername {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+        border-radius: 10px;
+        max-width: calc(100% - 8px);
+    }
+
+    #localUsername::before,
+    #remoteUsername::before {
+        font-size: 0.6rem;
+        margin-right: 1px;
+    }
+
+    /* Very Small Screen Session Time */
+    #sessionTime {
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        border-radius: 14px;
+        min-width: 60px;
+    }
+
+    #sessionTime::before {
+        font-size: 0.7rem;
+    }
+
+    #remoteVideoContainer {
+        height: 70vh;
+        margin: 5px auto;
+    }
+
+    /* Responsive camera off overlay for very small screens */
+    .camera-off-overlay img {
+        width: 28px !important;
+        height: 28px !important;
+        margin-bottom: 3px !important;
+    }
+
+    .camera-off-overlay span {
+        font-size: 9px !important;
+    }
+}
+
+/* Hidden Elements */
+.hide {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+input {
+    text-align: center;
+}
+
+/* Style the input field */
+#usernameIn {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: var(--text-color);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    transition:
+        border-color 0.3s,
+        background-color 0.3s;
+}
+
+#usernameIn:hover {
+    border-color: #007bff;
+}
+
+/* Center Alignment */
+.center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Custom button */
+.btn-custom {
+    height: var(--btn-size);
+    width: var(--btn-size);
+    margin: 0.1rem;
+    border: none;
+    border-radius: 50px !important;
+}
+
+@media (max-width: 768px) {
+    .btn-custom {
+        height: var(--btn-size-mobile);
+        width: var(--btn-size-mobile);
+    }
+    .btn-custom i {
+        font-size: 12px;
+    }
+}
+
+/* GitHub div */
+#githubDiv {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* User Sidebar Styles */
+.user-sidebar {
+    z-index: 1000;
+    position: fixed;
+    display: flex;
+    top: 0;
+    right: 0;
+    width: 350px;
+    height: 100%;
+    background: rgba(30, 32, 36, 0.98);
+    flex-direction: column;
+    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.25);
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s;
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+}
+
+.user-sidebar.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    animation: none !important;
+}
+
+/* User Sidebar Header with Tabs */
+.user-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: rgba(24, 25, 28, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.sidebar-tab {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sidebar-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-tab.active {
+    background: rgba(0, 123, 255, 0.2);
+    color: #007bff;
+    font-weight: 500;
+}
+
+.chat-notification {
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    animation: pulse 2s infinite;
+}
+
+.chat-notification.hidden {
+    display: none;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-exit-sidebar {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-exit-sidebar:hover {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    height: calc(100vh - 60px);
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* User Search Bar */
+.user-search-bar {
+    padding: 16px;
+    background: rgba(35, 36, 42, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#userSearchInput {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(24, 25, 28, 0.8);
+    color: #fff;
+    font-size: 0.95em;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#userSearchInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+#userSearchInput::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* User List Styles */
+.user-list {
+    flex: 1;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    overflow-y: auto;
+}
+
+.user-list li {
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+    border-left: 3px solid transparent;
+}
+
+.user-list li:hover {
+    background: rgba(42, 43, 49, 0.8);
+    color: #ffd700;
+    border-left-color: #ffd700;
+}
+
+.user-list li.selected {
+    background: rgba(0, 123, 255, 0.15);
+    color: #007bff;
+    border-left-color: #007bff;
+}
+
+/* Chat Messages */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(24, 25, 28, 0.6);
+}
+
+.chat-message {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+}
+
+.chat-message:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.chat-message.own-message {
+    background: rgba(0, 123, 255, 0.1);
+    border-left-color: #007bff;
+    margin-left: 20px;
+}
+
+.chat-message .chat-user {
+    font-weight: 600;
+    color: #007bff;
+    margin-right: 0.5em;
+    font-size: 0.9em;
+}
+
+.chat-message.own-message .chat-user {
+    color: #28a745;
+}
+
+.chat-message .chat-text {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.chat-message .chat-time {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75em;
+    margin-left: 0.5em;
+    float: right;
+}
+
+/* Chat Form */
+.chat-form {
+    display: flex;
+    padding: 16px;
+    background: rgba(35, 36, 42, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 10px;
+}
+
+/* Emoji Button */
+.btn-emoji {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-emoji:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-emoji:active {
+    transform: scale(0.95);
+}
+
+/* Emoji Picker Container */
+.emoji-picker-container {
+    position: absolute;
+    bottom: 80px;
+    left: 16px;
+    z-index: 1001;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 320px;
+    display: none; /* Hidden by default */
+}
+
+.emoji-picker-container.show {
+    display: block;
+}
+
+.emoji-picker-container em-emoji-picker {
+    --rgb-background: 30, 32, 36;
+    --rgb-accent: 0, 123, 255;
+    --rgb-border: 255, 255, 255, 0.1;
+    --rgb-color: 255, 255, 255;
+    --border-radius: 8px;
+    width: 320px;
+    height: 400px;
+}
+
+#chatInput {
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: rgba(24, 25, 28, 0.8);
+    color: #fff;
+    font-size: 0.95em;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#chatInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+#chatInput::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-send-chat {
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95em;
+}
+
+.btn-send-chat:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-send-chat:active {
+    transform: translateY(0);
+}
+
+/* Settings Styles */
+.settings-section {
+    padding: 20px;
+    background: rgba(24, 25, 28, 0.6);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.settings-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Add top margin for Chat Settings section */
+.settings-title:not(:first-child) {
+    margin-top: 30px;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.setting-select {
+    width: 100%;
+    height: 42px; /* Fixed height for consistency across browsers */
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(24, 25, 28, 0.8);
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.setting-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.setting-select option {
+    background: rgba(24, 25, 28, 0.95);
+    color: #fff;
+    padding: 8px;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.btn-test-devices,
+.btn-refresh-devices,
+.btn-clear-chat {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .user-sidebar {
+        width: 100vw;
+        max-width: 100vw;
+        z-index: 1000;
+    }
+
+    .sidebar-tabs {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .sidebar-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 4px;
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+
+    .sidebar-tab i {
+        font-size: 0.9rem;
+    }
+
+    .chat-messages {
+        padding: 12px;
+    }
+
+    .chat-form {
+        padding: 12px;
+    }
+
+    .btn-emoji {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+
+    #chatInput {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    .settings-section {
+        padding: 16px;
+    }
+
+    .settings-title {
+        font-size: 1rem;
+        margin-bottom: 16px;
+    }
+
+    .setting-group {
+        margin-bottom: 16px;
+    }
+
+    .settings-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+.user-list li.selected {
+    background: #444;
+    color: #ffd700;
+}
+
+/* Swal2 custom theme */
+.swal2-popup {
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: var(--text-color) !important;
+    border: none !important;
+}
+
+.swal2-popup .swal2-styled:focus {
+    box-shadow: none !important;
+}
+
+.swal2-title {
+    color: var(--text-color) !important;
+}
+
+.swal2-actions .swal2-confirm {
+    background-color: #157346 !important;
+    color: var(--text-color) !important;
+    border: none !important;
+}
+
+.swal2-actions .swal2-cancel {
+    background-color: #666 !important;
+    color: var(--text-color) !important;
+    border: none !important;
+}
+
+.swal2-timer-progress-bar {
+    background-color: green !important;
+}
+
+/* Webkit-Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: radial-gradient(#333, #000000);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: radial-gradient(#333, #000000);
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1b1f;
+}
+
+.red {
+    background: red !important;
+}
+
+.color-red {
+    color: red !important;
+}
+
+/*--------------------------------------------------------------
+# Pulse class effect
+--------------------------------------------------------------*/
+
+.pulsate {
+    animation: pulsate 3s ease-out;
+    animation-iteration-count: infinite;
+    -webkit-animation: pulsate 3s ease-out;
+    -webkit-animation-iteration-count: infinite;
+    opacity: 0.5;
+}
+
+@-webkit-keyframes pulsate {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes pulsate {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@-webkit-keyframes pulsate {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/*
+z-index:
+    - 1. remoteVideo
+    - 2. streamStatusContainer
+    - 3. localVideoContainer, attribution
+    - 4. sessionTime
+    - 5. userSidebar
+*/

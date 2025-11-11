@@ -1,0 +1,12 @@
+.DS_Store
+.cache
+.git
+.env
+
+node_modules
+npm-debug.log
+
+#personal
+docker-compose.yml
+turnserver.conf
+config.js
